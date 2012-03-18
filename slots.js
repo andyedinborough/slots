@@ -51,8 +51,10 @@ var Slots = (function(){
     winners.forEach(function(winner){
       events.trigger('winner', [winner]);
     });
-    if(winners.length === Math.min(_entries.length, _prizes.length))
+    if(winners.length === Math.min(_entries.length, _prizes.length)){
       events.trigger('finished');          
+      Slots.finished = true;
+    }
   }
  
   function stop(){
@@ -86,10 +88,7 @@ var Slots = (function(){
     
   function start(){
     Slots.stopped = false;
-    $('.entry').removeClass('winner loser').css({
-      opacity: '',
-      color: ''
-    });
+    $('.entry').removeClass('winner loser');
     $('.slot').removeClass('stopped');
     $('.slot .spin:first-child').each(function animate(){
       var spin = $(this), slot = spin.parent(),
@@ -101,21 +100,24 @@ var Slots = (function(){
             $(this).closest('.slot').addClass('stopped');
             if($('.slot.stopped').length === $('.slot').length) {          
               events.trigger('winner', [winners[winners.length-1]]);    
-              if(winners.length === Math.min(_entries.length, _prizes.length))
+              if(winners.length === Math.min(_entries.length, _prizes.length)){
                 events.trigger('finished');                
+                Slots.finished = true;
+              }
             }
           } : animate,
-        easing = hasWinner ? 'linear' : 'linear',
-        winnerTop = hasWinner ? (winner.position().top - slot.height() /2 + winner.height()/2) : 0;    
+        easing = hasWinner ? $.bez([.42,.43,.7,1.39]) : 'linear',
+        winnerTop = hasWinner ? (winner.position().top - slot.height()/2 + winner.height()/2 + height) : 0;    
       
-      spin.css({ marginTop: speed > 0 ? -height : 0 });
-      var marginTop = winner[0] ? 
-        (speed > 0 ? -winnerTop : (-height-winnerTop)): 
+      var current = speed > 0 ? -height : 0;
+      spin.css({ marginTop: current });
+      var marginTop = hasWinner ? 
+        -winnerTop : 
         (speed > 0 ? 0 : -height);
-      speed = hasWinner ? Math.abs(marginTop / height) * speed : speed;
+      speed *= hasWinner ? Math.abs((marginTop - current) / height) : 1;
       spin.animate({
            marginTop: marginTop
-      }, Math.abs(speed), 'linear', after);
+      }, height * Math.abs(speed) / 1000, easing, after);
     });
     
     events.trigger('start', [_prizes[winners.length] || '']);
