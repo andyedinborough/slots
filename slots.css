@@ -3,19 +3,51 @@
 body {
   background: hsl(124,100%,21%); 
   font-family: arial;
-   
+  height: 1000px;
+  overflow: hidden;
   background-image: radial-gradient(center, circle cover, hsl(124,100%,21%) 0%, hsl(124,70%,10%) 100%);
+  margin: 0;
+}
+body > .star {
+  position: absolute;
+  top: 400px;
+  left: 50%;
+  margin-left: -400px;
+}
+
+.star {
+  height: 0;
+  width: 0;
+  position: relative;
+  transform: rotate(10deg);
+  transform-origin: 400px 0;
+}
+.star:before {
+  border: 400px solid transparent;
+  border-bottom-color: hsl(124,100%,91%);
+  position: absolute;
+  top: -800px;
+  transform: scaleX(0.02);
+  content: '';
+}
+.star:after {
+  border: 400px solid transparent;
+  border-top-color: hsl(124,100%,91%);
+  position: absolute;
+  top: 0;
+  transform: scaleX(0.02);
+  content: '';
 }
 
 .bar {
   height: 300px;
-  margin: 200px auto 0 auto;
+  margin: 250px auto 0 auto;
   width: 500px;
   border: solid 4px #eee;
   border-radius: 16px;
   overflow: hidden;
   position: relative;
-  background: #222;
+  background: #222; 
 }
 
 .name {

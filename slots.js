@@ -76,6 +76,7 @@ function start(){
     }, Math.abs(speed), 'linear', after);
   });
 }
+
 $(window).load(function(){
   start();
 });
@@ -85,3 +86,7 @@ $(document).keyup(function(e){
     return stopped ? start() : stop();
   }
 });
+
+var star = $('.star');
+for(var i = 1; i<36; i++)
+  star.wrap(star.clone());
