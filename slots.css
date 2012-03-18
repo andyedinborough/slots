@@ -12,7 +12,7 @@ body > .star {
   position: absolute;
   top: 400px;
   left: 50%;
-  margin-left: -400px;
+  margin-left: -1000px;
 }
 
 .star {
@@ -20,23 +20,25 @@ body > .star {
   width: 0;
   position: relative;
   transform: rotate(10deg);
-  transform-origin: 400px 0;
+  transform-origin: 1000px 0;
 }
 .star:before {
-  border: 400px solid transparent;
-  border-bottom-color: hsl(124,100%,91%);
+  border: 1000px solid transparent;
+  border-bottom-color: white;
   position: absolute;
-  top: -800px;
-  transform: scaleX(0.02);
+  top: -2000px;
+  transform: scaleX(0.01);
   content: '';
+  opacity: 0.1;
 }
 .star:after {
-  border: 400px solid transparent;
-  border-top-color: hsl(124,100%,91%);
+  border: 1000px solid transparent;
+  border-top-color: white;
   position: absolute;
   top: 0;
-  transform: scaleX(0.02);
+  transform: scaleX(0.01);
   content: '';
+  opacity: 0.1;
 }
 
 .bar {
