@@ -52,7 +52,21 @@ body > .star {
   background: #222; 
 }
 
-.name {
+.bar:before , .bar:after{
+  height: 2px;
+  width: 90%;
+  left: 5%;
+  position: absolute;
+  top: 120px;
+  background: hsl(0, 100%, 35%);
+  content:'';
+  z-index: 99;
+}
+.bar:after {
+  top: 200px;
+}
+
+.slot .entry {
   font-size: 4em;
   padding: 5px 0;
   width: 500px;
@@ -61,10 +75,10 @@ body > .star {
   font-family: 'Smokum', cursive;
   color: #111;
 }
-.slot2 .name {
+.slot2 .entry {
   margin-left: -103%;
 }
-.slot3 .name {
+.slot3 .entry {
   margin-left: -206%;
 }
 
