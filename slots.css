@@ -45,8 +45,8 @@ body > .star {
   height: 300px;
   margin: 250px auto 0 auto;
   width: 500px;
-  border: solid 4px #eee;
-  border-radius: 16px;
+  border: solid 16px hsl(45, 67%, 53%);
+  border-radius: 30px; 
   overflow: hidden;
   position: relative;
   background: #222; 
