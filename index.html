@@ -6,16 +6,68 @@
   <link rel="stylesheet" href="slots.css" />
 </head>
 <body> 
+  <h1 class="prize"></h1>
+  <h1 class="all-done">That's All Folks!</h1>
   <div class="star"></div>
   <div class="bar"><!--
     --><div class="slot slot1" data-speed="1000"></div><!--
     --><div class="slot slot2" data-speed="-1200"></div><!--
     --><div class="slot slot3" data-speed="800"></div><!--
     --></div> 
-    
+  <div class="winner-circle"></div>
+  <button type="reset" class="reset">RESET</button> 
+   
   <script src="jquery-1.7.1.min.js"></script>
   <script src="jquery-easing.1.3.1.js"></script>
   <script src="prefixfree.js"></script>
   <script src="slots.js"></script>
+  <script>
+    var finished = false;
+    
+    Slots.events
+      .on('start', function(e, prize){
+        $('.prize').show().text(prize || '');
+      })
+      .on('winner', function(e, winner){
+        var div = $('<div/>').text((winner.id || winner.uid) + '. ' + winner.text + ': ' + winner.prize);
+        $('.winner-circle')
+          .show()
+          .append(div);       
+      })
+      .on('finished', function(e){
+        $('.all-done').fadeIn();
+        finished = true;
+      });
+
+    Slots.init([
+        { image: 'https://tracky.com/content/icon/user/1.png', text: 'Andy Edinborough' },
+        'David Gosse',
+        'Jennifer Gosse',
+        'Evan Nagle',
+        'Mike Manzano',
+        'Jason Lovelady'
+      ], ['iPad', 'hug', 'keychain' ]);
+      
+    $(window).load(function(){
+      if(!finished) Slots.start();
+    });
+
+    $(document).keyup(function(e){
+      if(e.keyCode===32){
+        return Slots.stopped ? Slots.start() : Slots.stop();
+      }
+    });
+
+    $('.reset').click(function(){
+      if(confirm('This will reset all recorded winners and their prizes.\n\nAre you sure?')) {
+        Slots.winners.clear();
+        location.reload();
+      }
+    });
+    
+    var star = $('.star');
+    for(var i = 1; i<36; i++)
+      star.wrap(star.clone());  
+  </script>
 </body>
 </html>

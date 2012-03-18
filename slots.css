@@ -14,6 +14,18 @@ body > .star {
   left: 50%;
   margin-left: -1000px;
 }
+.winner-circle {
+  position: fixed;
+  top: 10px; right: 10px;
+  color: hsl(124,100%,91%);
+  font-size: 12px;
+  background: rgba(0,0,0,0.1);
+  display: none;
+  border-radius: 4px;
+}
+.winner-circle  > *{
+  padding: 4px 8px;
+}
 
 .star {
   height: 0;
@@ -41,8 +53,39 @@ body > .star {
   opacity: 0.1;
 }
 
+.prize, .all-done {
+  width: 800px;
+  text-align: center;
+  margin: 0 0 0 -400px;
+  padding: 0;
+  left: 50%;
+  top: 70px;
+  color: white; 
+  text-shadow: 2px 2px 4px black;
+  font-family: 'Smokum', cursive;
+  position: absolute;
+  font-size: 7em;  
+}
+.all-done {
+  top: auto;
+  bottom: 20px;
+  display: none;
+}
+
+.reset {
+  position: fixed;
+  right: 15px;
+  bottom: 5px;
+  background: #555;
+  color: #aaa;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
 .bar {
-  height: 300px;
+  height: 320px;
   margin: 250px auto 0 auto;
   width: 500px;
   border: solid 16px hsl(45, 67%, 53%);
@@ -63,22 +106,32 @@ body > .star {
   z-index: 99;
 }
 .bar:after {
-  top: 200px;
+  top: 206px;
 }
 
 .slot .entry {
-  font-size: 4em;
   padding: 5px 0;
-  width: 500px;
   text-align: center; 
+}
+.slot .entry.text {
+  font-size: 4em;
   white-space: nowrap; 
   font-family: 'Smokum', cursive;
   color: #111;
+  width: 500px;
 }
-.slot2 .entry {
+.slot .entry.image {
+  width: 100%;
+}
+.slot .entry.image img {
+  border-radius: 4px;
+  width: 48px;
+  height: 48px;
+}
+.slot2 .entry.text {
   margin-left: -103%;
 }
-.slot3 .entry {
+.slot3 .entry.text {
   margin-left: -206%;
 }
 
