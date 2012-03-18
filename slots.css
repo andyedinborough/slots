@@ -1,60 +1,59 @@
+@import url(http://fonts.googleapis.com/css?family=Smokum); 
 
-  @import url(http://fonts.googleapis.com/css?family=Smokum); 
+body {
+  background: hsl(124,100%,21%); 
+  font-family: arial;
+   
+  background-image: radial-gradient(center, circle cover, hsl(124,100%,21%) 0%, hsl(124,70%,10%) 100%);
+}
+
+.bar {
+  height: 300px;
+  margin: 200px auto 0 auto;
+  width: 500px;
+  border: solid 4px #eee;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  background: #222;
+}
+
+.name {
+  font-size: 4em;
+  padding: 5px 0;
+  width: 500px;
+  text-align: center; 
+  white-space: nowrap; 
+  font-family: 'Smokum', cursive;
+  color: #111;
+}
+.slot2 .name {
+  margin-left: -103%;
+}
+.slot3 .name {
+  margin-left: -206%;
+}
+
+.slot { 
+  height: 97%;
+  width: 32%;
+  background-color: grey;
+  display: inline-block; 
+  background-image: linear-gradient(top, #555 0%, #999 4%, #ddd 10%, #fff 50%, #ddd 90%, #999 96%, #555 100%);
+  overflow: hidden;
+  position: absolute;
+  top: 1.6%;
+} 
+
+.slot1 {
+  border-radius: 10px 0 0 10px; 
+  left: 1%;
+}
+.slot2 {  
+  left: 34%;
   
-  body {
-    background: hsl(124,100%,21%); 
-    font-family: arial;
-     
-    background-image: radial-gradient(center, circle cover, hsl(124,100%,21%) 0%, hsl(124,70%,10%) 100%);
-  }
-  
-  .bar {
-    height: 300px;
-    margin: 200px auto 0 auto;
-    width: 500px;
-    border: solid 4px #eee;
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    background: #222;
-  }
-  
-  .name {
-    font-size: 4em;
-    padding: 5px 0;
-    width: 500px;
-    text-align: center; 
-    white-space: nowrap; 
-    font-family: 'Smokum', cursive;
-    color: #111;
-  }
-  .slot2 .name {
-    margin-left: -103%;
-  }
-  .slot3 .name {
-    margin-left: -206%;
-  }
-  
-  .slot { 
-    height: 97%;
-    width: 32%;
-    background-color: grey;
-    display: inline-block; 
-    background-image: linear-gradient(top, #555 0%, #999 4%, #ddd 10%, #fff 50%, #ddd 90%, #999 96%, #555 100%);
-    overflow: hidden;
-    position: absolute;
-    top: 1.6%;
-  } 
-  
-  .slot1 {
-    border-radius: 10px 0 0 10px; 
-    left: 1%;
-  }
-  .slot2 {  
-    left: 34%;
-    
-  }
-  .slot3 {
-    border-radius: 0 10px 10px 0; 
-    left: 67%;
-  }
+}
+.slot3 {
+  border-radius: 0 10px 10px 0; 
+  left: 67%;
+}
