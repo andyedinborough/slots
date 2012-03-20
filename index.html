@@ -4,22 +4,29 @@
   <meta charset=utf-8 />
   <title>Slots</title>  
   <link rel="stylesheet" href="slots.css" />
+  <script src="prefixfree.js"></script>
+  <style>
+    body {
+      background: url(https://tracky.com/Themes/TrackyCorp/images/bg.jpg);
+    }
+  </style>
 </head>
 <body> 
+  
   <h1 class="prize"></h1>
   <h1 class="all-done">That's All Folks!</h1>
+  <div class="radial"></div>
   <div class="star"></div>
   <div class="bar"><!--
-    --><div class="slot slot1" data-speed="2400"></div><!--
-    --><div class="slot slot2" data-speed="-1600"></div><!--
-    --><div class="slot slot3" data-speed="1200"></div><!--
+    --><div class="slot slot1" data-speed="15"></div><!--
+    --><div class="slot slot2" data-speed="-12"></div><!--
+    --><div class="slot slot3" data-speed="24"></div><!--
     --></div> 
   <div class="winner-circle"></div>
   <button type="reset" class="reset">RESET</button> 
    
   <script src="jquery-1.7.1.min.js"></script>
   <script src="jquery.bez.min.js"></script>
-  <script src="prefixfree.js"></script>
   <script src="slots.js"></script>
   <script>
     var finished = false;
@@ -52,14 +59,17 @@
       if(!finished) Slots.start();
     });
 
-    $(document).keyup(function(e){
-      if(e.keyCode === 32){
+    $(document).on('keyup click', function(e){
+      if(e.type === 'click' || e.keyCode === 32){
         e.preventDefault();
         return Slots.stopped ? Slots.start() : Slots.stop();
       }
     });
 
-    $('.reset').click(function(){
+    $('.reset').click(function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
       if(confirm('This will reset all recorded winners and their prizes.\n\nAre you sure?')) {
         Slots.winners.clear();
         location.reload();

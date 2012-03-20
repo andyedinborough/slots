@@ -1,8 +1,34 @@
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = 
+          window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+ 
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+ 
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+
 var Slots = (function(){ 
   var _entries, _prizes, bar = $('.bar'), stopped = false, 
     slots = $('.slot'),
     winners = localStorage.winners ? JSON.parse(localStorage.winners)  : [],
-    Slots, uid = 0, events = $({});
+    Slots, uid = 0, events = $({}),
+    bezier = $.bez([.42,.43,.7,1.39]);
     
   $.extend(winners, {
     save: function(){
@@ -23,6 +49,16 @@ var Slots = (function(){
     }
   }); 
   
+  $.fn.randomizeChildren = function() {
+    return this
+      .children()
+      .sort(function(a, b) {
+        return Math.random() - 0.5;
+      })
+      .appendTo(this)
+      .end().end();
+  };
+  
   function init(entries, prizes){
     _entries = Slots.entries = entries.map(function(entry, i){
       return $.extend(
@@ -34,7 +70,7 @@ var Slots = (function(){
       
     slots.each(function(){
       var slot = $(this).empty(),
-        spin = $('<div class="spin"/>').appendTo(slot);
+        spin = $('<div class="spin"/>');
       
       _entries.forEach(function(entry){ 
         $('<div class="entry"/>')
@@ -44,8 +80,11 @@ var Slots = (function(){
           .appendTo(spin);
       });
       
-      spin.clone().appendTo(slot); 
-      spin.clone().appendTo(slot); 
+      spin
+        .randomizeChildren()
+        .appendTo(slot)
+        .clone().appendTo(slot)
+        .clone().appendTo(slot); 
     }); 
     
     winners.forEach(function(winner){
@@ -55,7 +94,7 @@ var Slots = (function(){
       events.trigger('finished');          
       Slots.finished = true;
     }
-  }
+  } 
  
   function stop(){
     Slots.stopped = true;
@@ -82,43 +121,78 @@ var Slots = (function(){
     slots.find('.spin:nth-child(2) [data-uid=' + winner.uid + ']').addClass('winner');
     entries.not('.winner').addClass('loser');  
     slots.each(function(i){
-      $(this).data('rem', i === 0 ? 0 : i === 1 ? 2 : 1);
+      $(this).data('info').state = 1;
     });
   }
+  
+  
+  function onFrame (func) {
+    var ref = {};
+    ref.id = window.requestAnimationFrame(function again(){
+      if(func() !== false){
+        ref.id = window.requestAnimationFrame(again);
+      }
+    });
+    return ref;
+  }
+  
+  function cancelFrame(ref){
+    if(ref) 
+      window.cancelAnimationFrame(ref.id);
+  }
+  
+  function px(n) {
+    return ((n + 0.5) << 0) + 'px';
+  }
+  
+  onFrame(function (){
+    $('.slot').each(function (){
+      var slot = $(this), 
+        spin = slot.children('.slot:first'),
+        info = slot[0].info || (slot[0].info = { state: 2, speed: slot.data('speed') / 1000 }),
+        speed = info.speed,
+        height = spin.height(),
+        endpoint = info.endpoint,
+        current = info.current || 0,
+        state = info.state,
+        y = 0; 
+      current += Math.abs(speed);
+     
+      if(current >= 1) {
+        if(state === 2) {
+          return;
+        }
+        current = 0; 
+        var winner = slot.find('.winner'); 
+        endpoint = height;      
+        if(state === 1){
+          this.style.marginTop = px(-height); 
+          var mid =  winner.position().top + winner.height() / 2; 
+          endpoint = -winner.position().top - winner.height() / 2 + slot.height() / 2; 
+          info.state = state = 2;
+        }
+        info.endpoint = endpoint;  
+      }  
+      
+      if(false && state === 2){  
+        y = bezier(current);
+      } else y = current;
+      
+      if(speed < 0) y = 1 - y;
+      
+      this.style.marginTop = px(y * endpoint - height);   
+      info.current = current;   
+    });
+  });
     
   function start(){
     Slots.stopped = false;
     $('.entry').removeClass('winner loser');
-    $('.slot').removeClass('stopped');
-    $('.slot .spin:first-child').each(function animate(){
-      var spin = $(this), slot = spin.parent(),
-        speed = slot.data('speed'),
-        height = spin.height(),
-          winner = slot.find('.winner'),
-        hasWinner = !!winner[0] && slot.data('rem', (slot.data('rem') || 0) - 1).data('rem') <= 0,
-        after = hasWinner ? function() {
-            $(this).closest('.slot').addClass('stopped');
-            if($('.slot.stopped').length === $('.slot').length) {          
-              events.trigger('winner', [winners[winners.length-1]]);    
-              if(winners.length === Math.min(_entries.length, _prizes.length)){
-                events.trigger('finished');                
-                Slots.finished = true;
-              }
-            }
-          } : animate,
-        easing = hasWinner ? $.bez([.42,.43,.7,1.39]) : 'linear',
-        winnerTop = hasWinner ? (winner.position().top - slot.height()/2 + winner.height()/2 + height) : 0;    
-      
-      var current = speed > 0 ? -height : 0;
-      spin.css({ marginTop: current });
-      var marginTop = hasWinner ? 
-        -winnerTop : 
-        (speed > 0 ? 0 : -height);
-      speed *= hasWinner ? Math.abs((marginTop - current) / height) : 1;
-      spin.animate({
-           marginTop: marginTop
-      }, height * Math.abs(speed) / 1000, easing, after);
-    });
+    $('.slot')
+      .removeClass('stopped')
+      .each(function(i){
+        this.info.state = 0;
+      });
     
     events.trigger('start', [_prizes[winners.length] || '']);
   }
